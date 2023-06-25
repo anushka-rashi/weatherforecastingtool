@@ -1,5 +1,7 @@
 import requests
 import json
+import tkinter as tk
+import webbrowser
 
 API_KEY = "17d59437ed32af4dce8429118c2d9b5d"  # Replace with your OpenWeatherMap API key
 
@@ -73,7 +75,7 @@ def generate_html(current_weather, forecast):
                 margin-right: 10px;
                 border-radius: 10px;
                 padding: 10px;
-                background-color: rgba(255, 255, 255, 0.3);
+                background-color: rgba(255, 255, 255, 0.1);
             }}
             .weather-panel .forecast-column .date {{
                 font-weight: bold;
@@ -89,9 +91,9 @@ def generate_html(current_weather, forecast):
             <div class="weather-panel">
                 <div class="header">Current Weather Forecast for {city}</div>
                 <div class="data">
-                <div class="info temperature"><span>{temperature}°F</span></div>
+                <div class="info temperature"><span>Temperature:{temperature}°F</span></div>
                 
-                <div class="info">{humidity}%</div>
+                <div class="info">Humidity:{humidity}%</div>
             
                 <div class="info">{description}</div>
                 </div>
@@ -149,10 +151,28 @@ def generate_html(current_weather, forecast):
     with open('weather_forecast.html', 'w') as file:
         file.write(html_content)
 
-if __name__ == "__main__":
-    city_name = input("Enter city name: ")
+def open_html_in_new_tab():
+    webbrowser.open_new_tab('weather_forecast.html')
+
+def search_weather():
+    city_name = entry.get()
     current_weather_data, forecast_data = get_weather(city_name)
 
     if current_weather_data and forecast_data:
         generate_html(current_weather_data, forecast_data)
-        print("HTML file 'weather_forecast.html' generated.")
+        open_html_in_new_tab()
+
+window = tk.Tk()
+window.title("Weather Forecast")
+window.geometry("300x100")
+
+label = tk.Label(window, text="Enter city name:")
+label.pack()
+
+entry = tk.Entry(window)
+entry.pack()
+
+button = tk.Button(window, text="Search", command=search_weather)
+button.pack()
+
+window.mainloop()
